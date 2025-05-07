@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.Restaurants;
 using Restaurants.Application.Restaurants.Commands.CreateRestaurant;
+using Restaurants.Application.Restaurants.Commands.DeleteRestaurant;
+using Restaurants.Application.Restaurants.Commands.UpdateRestaurant;
 using Restaurants.Application.Restaurants.Dtos;
 using Restaurants.Application.Restaurants.Queries.GetAllRestaurants;
 using Restaurants.Application.Restaurants.Queries.GetRestaurantById;
@@ -50,6 +52,40 @@ namespace Restaurants.API.Controllers
                 return BadRequest("Failed to add restaurant.");
             }
             return CreatedAtAction(nameof(GetRestaurantById),new { id = resatuarantId }, commad);
+        }
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteRestaurant([FromRoute] int id)
+        {
+            var isDeleted = await mediator.Send(new DeleteRestaurantCommand(id));
+            if (isDeleted)
+            {
+                return NoContent();
+            }
+            return NotFound();
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateRestaurnt([FromBody] UpdateRestaurantCommand command, [FromRoute] int id)
+        {
+            if (command==null)
+            {
+                return BadRequest("Restaurant data is null.");
+            }
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (id != command.Id)
+            {
+                return BadRequest("Id in the URL and body do not match.");
+            }
+            var isUpdated=await mediator.Send(command);
+            if (isUpdated)
+            {
+                return NoContent();
+            }
+            return NotFound();
+
         }
     }
 }

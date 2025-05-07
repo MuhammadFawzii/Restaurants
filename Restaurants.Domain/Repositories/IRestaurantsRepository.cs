@@ -13,8 +13,7 @@ namespace Restaurants.Domain.Repositories
         public Task<Restaurant?> GetRestaurantByIdFromDBAsync(int id);
         public Task<int> AddRestaurantToDBAsynce(Restaurant restaurant);
 
-
-
-
+        public Task<bool> DeleteRestaurantFromDBAsynce(int id);
+        public Task<int> SaveAsync();
     }
 }
