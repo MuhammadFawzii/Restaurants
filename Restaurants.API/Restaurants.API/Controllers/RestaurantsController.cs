@@ -1,26 +1,31 @@
-﻿using System.Threading.Tasks;
+﻿using System.Reflection.Metadata;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.Restaurants;
+using Restaurants.Application.Restaurants.Commands.CreateRestaurant;
 using Restaurants.Application.Restaurants.Dtos;
+using Restaurants.Application.Restaurants.Queries.GetAllRestaurants;
+using Restaurants.Application.Restaurants.Queries.GetRestaurantById;
 
 namespace Restaurants.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RestaurantsController(IRestaurantsService restaurantsService) : ControllerBase
+    public class RestaurantsController(IMediator mediator) : ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> GetRestaurants()
         {
-            var restaurants = await restaurantsService.GetAllRestaurantsAsync();
+            var restaurants = await mediator.Send(new GetAllRestaurantsQuery()) ;
             return Ok(restaurants);
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetRestaurantById([FromRoute] int id)
         {
-            var restaurant = await restaurantsService.GetRestaurantByIdAsynce(id);
+            var restaurant = await mediator.Send(new GetRestaurantByIdQuery(id));
             if (restaurant == null)
             {
                 return NotFound();
@@ -29,9 +34,9 @@ namespace Restaurants.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddRestaurant([FromBody] CreateRestaurantDto restaurantDto)
+        public async Task<IActionResult> CreateRestaurant([FromBody] CreateRestaurantCommand commad)
         {
-            if (restaurantDto == null)
+            if (commad == null)
             {
                 return BadRequest("Restaurant data is null.");
             }
@@ -39,12 +44,12 @@ namespace Restaurants.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var resatuarantId= await restaurantsService.AddRestaurantAsynce(restaurantDto);
+            var resatuarantId= await mediator.Send(commad);
             if (resatuarantId == 0)
             {
                 return BadRequest("Failed to add restaurant.");
             }
-            return CreatedAtAction(nameof(GetRestaurantById),new { id = resatuarantId },restaurantDto);
+            return CreatedAtAction(nameof(GetRestaurantById),new { id = resatuarantId }, commad);
         }
     }
 }

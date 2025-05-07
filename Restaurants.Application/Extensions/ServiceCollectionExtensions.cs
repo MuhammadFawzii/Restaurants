@@ -17,11 +17,13 @@ public static class ServiceCollectionExtensions
     public static void AddApplication(this IServiceCollection services)
     {
         var applicationAssembly = typeof(ServiceCollectionExtensions).Assembly;
-        services.AddScoped<IRestaurantsService, RestaurantsService>();
         // this is services for automapper  
         services.AddAutoMapper(applicationAssembly);
         //this the servie for FluentValidation
         services.AddValidatorsFromAssembly(applicationAssembly).AddFluentValidationAutoValidation();
+
+        //this the sevice for MediatR CORs
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(applicationAssembly));
     }
 
 
