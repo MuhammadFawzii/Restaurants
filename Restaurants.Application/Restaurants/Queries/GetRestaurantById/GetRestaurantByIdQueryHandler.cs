@@ -7,26 +7,30 @@ using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Restaurants.Application.Restaurants.Dtos;
+using Restaurants.Domain.Entities;
+using Restaurants.Domain.Exceptions;
 using Restaurants.Domain.Repositories;
 
 namespace Restaurants.Application.Restaurants.Queries.GetRestaurantById
 {
-    internal class GetRestaurantByIdQueryHandler(ILogger<GetRestaurantByIdQueryHandler> logger, IMapper mapper, IRestaurantsRepository restaurantsRepository) : IRequestHandler<GetRestaurantByIdQuery, RestaurantDto?>
+    internal class GetRestaurantByIdQueryHandler(ILogger<GetRestaurantByIdQueryHandler> logger, IMapper mapper, IRestaurantsRepository restaurantsRepository) : IRequestHandler<GetRestaurantByIdQuery, RestaurantDto>
     {
-        public async Task<RestaurantDto?> Handle(GetRestaurantByIdQuery request, CancellationToken cancellationToken)
+        public async Task<RestaurantDto> Handle(GetRestaurantByIdQuery request, CancellationToken cancellationToken)
         {
-            logger.LogInformation($"Fetch restaurant that Id ={request.Id}");
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
+            logger.LogInformation("Fetching restaurant with Id = {RestaurantId}", request.Id);
+
             var restaurant = await restaurantsRepository.GetRestaurantByIdFromDBAsync(request.Id);
-            if (restaurant is null)
+            if (restaurant == null)
             {
-                logger.LogWarning($"Restaurant with Id {request.Id} not found.");
-                return null;
+               throw new NotFoundException(nameof(Restaurant), request.Id.ToString());
             }
-            logger.LogInformation($"Restaurant with Id {request.Id} found.");
-            //this is from manuall mapping
-            //var restaurantDto=RestaurantDto.FromEntity(restaurant);
-            var restaurantDto = mapper.Map<RestaurantDto>(restaurant);
-            return restaurantDto;
+
+            logger.LogInformation("Restaurant with Id = {RestaurantId} found.", request.Id);
+
+            // Map the restaurant entity to a DTO
+            return mapper.Map<RestaurantDto>(restaurant);
         }
     }
 }
