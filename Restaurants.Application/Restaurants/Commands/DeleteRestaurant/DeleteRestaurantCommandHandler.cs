@@ -10,16 +10,16 @@ public class DeleteRestaurantCommandHandler(ILogger<DeleteRestaurantCommandHandl
 {
     async Task<bool> IRequestHandler<DeleteRestaurantCommand, bool>.Handle(DeleteRestaurantCommand request, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Deleting restaurant with id {Id}", request.Id);
+        logger.LogInformation("Deleting restaurant with {ResaurantId}", request.Id);
         bool result = await restaurantsRepository.DeleteRestaurantFromDBAsynce(request.Id);
         if (result)
         {
-            logger.LogInformation("Restaurant with id {Id} deleted successfully", request.Id);
+            logger.LogInformation("Restaurant with {ResaurantId} deleted successfully", request.Id);
             return true;
         }
         else
         {
-            logger.LogWarning("Restaurant with id {Id} not found", request.Id);
+            logger.LogWarning("Restaurant with {ResaurantId} not found", request.Id);
 
             return false;
 

@@ -12,7 +12,7 @@ public class UpdateRestaurantCommandHandler(ILogger<UpdateRestaurantCommandHandl
         Restaurant? oldRestaurant=await restaurantsRepository.GetRestaurantByIdFromDBAsync(request.Id);
         if (oldRestaurant == null)
         {
-            logger.LogWarning("Restaurant with id {Id} not found", request.Id);
+            logger.LogWarning("Restaurant with {ResaurantId} not found", request.Id);
             return false;
         }
         mapper.Map(request, oldRestaurant);
@@ -20,12 +20,12 @@ public class UpdateRestaurantCommandHandler(ILogger<UpdateRestaurantCommandHandl
         int effectedRows = await restaurantsRepository.SaveAsync();
         if (effectedRows>0)
         {
-            logger.LogInformation("Restaurant with id {Id} updated successfully", request.Id);
+            logger.LogInformation("Restaurant with {ResaurantId} updated successfully", request.Id);
             return true;
         }
         else
         {
-            logger.LogWarning("Failed to update restaurant with id {Id}", request.Id);
+            logger.LogWarning("Failed to update restaurant with {ResaurantId}", request.Id);
             return false;
 
         }

@@ -18,14 +18,14 @@ namespace Restaurants.API.Controllers
     public class RestaurantsController(IMediator mediator) : ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> GetRestaurants()
+        public async Task<ActionResult<IEnumerable<RestaurantDto>>> GetRestaurants()
         {
             var restaurants = await mediator.Send(new GetAllRestaurantsQuery()) ;
             return Ok(restaurants);
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetRestaurantById([FromRoute] int id)
+        public async Task<ActionResult<RestaurantDto?>> GetRestaurantById([FromRoute] int id)
         {
             var restaurant = await mediator.Send(new GetRestaurantByIdQuery(id));
             if (restaurant == null)
@@ -36,6 +36,9 @@ namespace Restaurants.API.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+
         public async Task<IActionResult> CreateRestaurant([FromBody] CreateRestaurantCommand commad)
         {
             if (commad == null)
@@ -54,6 +57,9 @@ namespace Restaurants.API.Controllers
             return CreatedAtAction(nameof(GetRestaurantById),new { id = resatuarantId }, commad);
         }
         [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
         public async Task<IActionResult> DeleteRestaurant([FromRoute] int id)
         {
             var isDeleted = await mediator.Send(new DeleteRestaurantCommand(id));
@@ -65,6 +71,9 @@ namespace Restaurants.API.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateRestaurnt([FromBody] UpdateRestaurantCommand command, [FromRoute] int id)
         {
             if (command==null)
