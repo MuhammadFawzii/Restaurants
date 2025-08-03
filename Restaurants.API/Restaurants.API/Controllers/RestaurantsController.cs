@@ -1,6 +1,7 @@
 ﻿using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.Restaurants;
@@ -15,9 +16,11 @@ namespace Restaurants.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RestaurantsController(IMediator mediator) : ControllerBase
     {
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<RestaurantDto>>> GetRestaurants()
         {
             var restaurants = await mediator.Send(new GetAllRestaurantsQuery()) ;
@@ -25,13 +28,9 @@ namespace Restaurants.API.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<RestaurantDto?>> GetRestaurantById([FromRoute] int id)
+        public async Task<ActionResult<RestaurantDto>> GetRestaurantById([FromRoute] int id)
         {
             var restaurant = await mediator.Send(new GetRestaurantByIdQuery(id));
-            if (restaurant == null)
-            {
-                return NotFound();
-            }
             return Ok(restaurant);
         }
 
@@ -62,12 +61,9 @@ namespace Restaurants.API.Controllers
 
         public async Task<IActionResult> DeleteRestaurant([FromRoute] int id)
         {
-            var isDeleted = await mediator.Send(new DeleteRestaurantCommand(id));
-            if (isDeleted)
-            {
-                return NoContent();
-            }
-            return NotFound();
+            await mediator.Send(new DeleteRestaurantCommand(id));
+            
+            return NoContent();
         }
 
         [HttpPut("{id:int}")]
@@ -88,12 +84,8 @@ namespace Restaurants.API.Controllers
             {
                 return BadRequest("Id in the URL and body do not match.");
             }
-            var isUpdated=await mediator.Send(command);
-            if (isUpdated)
-            {
-                return NoContent();
-            }
-            return NotFound();
+            await mediator.Send(command);
+            return NoContent();
 
         }
     }

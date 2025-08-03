@@ -1,8 +1,10 @@
-
+using Restaurants.API.Middlewares;
 using Restaurants.Application.Extensions;
+using Restaurants.Domain.Entities;
 using Restaurants.Infrastructure.Extensions;
 using Restaurants.Infrastructure.Seaders;
 using Serilog;
+using Restaurants.API.Extensions;
 namespace Restaurants.API
 {
     public class Program
@@ -11,28 +13,11 @@ namespace Restaurants.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
-            builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
-            builder.Services.AddSwaggerGen();
+            builder.AddPresentation();
             builder.Services.AddApplication();
             builder.Services.AddInfrastructure(builder.Configuration);
 
-            //add the Serilog coonfiguration 
-            builder.Host.UseSerilog((context, configuration) =>
-            {
-                configuration.ReadFrom.Configuration(context.Configuration);
-
-
-
-                //configuration
-                //    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
-                //    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", Serilog.Events.LogEventLevel.Information)
-                //    .WriteTo.File("Logs/Log-Restaurant-API-", rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true)
-                //    .WriteTo.Console(outputTemplate: "[{Timestamp:dd-MM HH:mm:ss} {Level:u3}] | {SourceContext} | {NewLine}{Message:lj}{NewLine}{Exception}");
-            });
+       
             var app = builder.Build();
 
             #region Seeding Data
@@ -41,20 +26,28 @@ namespace Restaurants.API
             var seader = app.Services.CreateScope().ServiceProvider.GetRequiredService<IRestaurantSeader>();
             seader.Seed();
             #endregion
-
-
+            //midelware for error handling
+            app.UseMiddleware<ErrorHandlingMiddleware>();
+            //midelware for request time logging
+            app.UseMiddleware<RequestTimeLoggingMiddleware>();
+            //midelware for Serilog 
+            app.UseSerilogRequestLogging();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
                 app.UseSwagger();
                 app.UseSwaggerUI();
-               
-            }
-            //midelware for Serilog 
-            app.UseSerilogRequestLogging();
-            app.UseHttpsRedirection();
 
+                });
+
+
+
+            app.UseHttpsRedirection();
+            // this is middleware for authentication 
+            app.MapGroup("api/identity")
+                .WithTags("Identity")
+                .MapIdentityApi<ApplicationUser>();
             app.UseAuthorization();
 
 

@@ -17,15 +17,15 @@ public class DishDto
     /// data between application layers while maintaining encapsulation and avoiding
     /// direct exposure of domain entities.
     /// </summary>
-    public static DishDto FromEntity(Dish dish)
-    {
-        return new DishDto
-        {
-            Id = dish.Id,
-            Name = dish.Name,
-            Description = dish.Description,
-            Price = dish.Price,
-            KiloCalories = dish.KiloCalories
-        };
-    }
+    //public static DishDto FromEntity(Dish dish)
+    //{
+    //    return new DishDto
+    //    {
+    //        Id = dish.Id,
+    //        Name = dish.Name,
+    //        Description = dish.Description,
+    //        Price = dish.Price,
+    //        KiloCalories = dish.KiloCalories
+    //    };
+    //}
 }
