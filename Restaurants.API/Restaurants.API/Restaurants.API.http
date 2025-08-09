@@ -1,5 +1,5 @@
 @Restaurants.API_HostAddress = https://localhost:5001
-@token=CfDJ8GMvchXJt85Hl76HEG1NLkvma7uKmFXN0IAi7O3ZyNjXIiESlNZkbOp-mTJ2zi14RvP8yUCIwSctrTX2PuDBJCmSYWPUEjO2RhNsZeJa30b_d2YNoTEsH5cMCXro2WBbDymW_fv8SAURZAM70HfCFlO61y9fllKQwsuMpjTkBTgHnQ-sTCXnSu33aRj9GawSYOFUlpEDDykZig4ZA12_ErsKOUsDTnoJ0xgUaSDRGIf8SDi4Y-ypVnppdA6GKuG_1S5hwVUXo2JeCPs6pjIc-bntUieyqAzZPUZ6db2vyaRUFggZ-udijD94kXOYJxyrVQ1JyTXw4wqRO6yQAG2Dli0yA3f51B5Mr22q9PDlbu_oamSwTtLyRUBO2BRdYtnDZXiLgLYR-9cY53MivuL8vhzVQKqGYH4WGjOkf0GavWpS_F_MjdCmoMSN5vJCFPxcWI3vSCGzyN_HuPlnL_6vQaetAwIx0gmyKO7ybyGTGKSUXe1UNoqZtiMG0rUNoaxcpPrm7UmKc-d7yZLC6fxapWAYKjkgwadSEUCIhlz-ImGvyXTq1z9kwhOXicaxdsP5hmYCSj1JLy-OlDr8X2zUiwvtzxhoM1QZlqS9sFV0g-timyEW2K8Oje4F-ttW-6_7fBbOWPK90MRE3Fs1w0x-6pCnb4SCO4SfDVK0CRXgF0z1EXEqjHICDzbeMl40ayqE9g
+@token=CfDJ8GMvchXJt85Hl76HEG1NLkt3faV4s2uzp8V5oQZSQHSuqd1MhnD3_aeDAx4pGMhXNsChUQFDbKSZA7ysbD72tNLHe7QIjXUm8XyAzVFIQVW2z8DbGS1brMrmF_bTb_VEpHUh_V3owR5jkY2NlC0eCMkGS9L-2fz9GvK0hBcSf5UwdBomoffPjxlqbsKaHJ7ZoSOHZkiPlMxzIeFfP0MUxsGQabNVGDr3Ean3K-Vf1YaFzgcL2DBdJPIz4p8IGUUiXlL_XWcrUgAnb8T1M8Ja2qJlwqEHh0HDJpNUOwjzaARgO12-yI1qfKLeY7exBY1wx7tyqEixn8a9os15dj7fhHkKrY9r9ZJIy0MVI7bpKY0j1-6FY0-H4Tx1GA_XKwurZ-plnKSSb7tMxAtoAep0LcSuBVbtqoctStwJVJwLL2dlhEtkRV9BOrbo4Oi5DzQYCV9FtgmTh-hWsq76upRielOQrlPPOqvuIvjBIiAN1ScZi1-m8Z-4h5bjGuT2fcCdg1PRsx1kjb1TpdH5dRLSv5h53kwgvOAhPlpUiC7xDXs6lheq8e6tR4jlt7PTGLsB0z9pB_CImPc2Z2qwoPzGDrnIECPqLqHf9aM8lqR2Tk6rkF9N32HLmHNtTxAn_Sr7uu3o3ZdGx9gOYr9JzYNkTxdvqqEqpDbgh2gTNKU3_3xxXKWIG_S-lyt0v0A57Yr5EiW8HAkI4kxiGfYwcnekbqoBY-0cPl-GJEdXndxo5lQgKl40iNXjV3qVA7AcaNFonjn9gnBt-e6Izs2Pw-3n_bUAeTMCatKp-2Y5TOBJEdH4
 GET {{Restaurants.API_HostAddress}}/api/restaurants
 
 ###
@@ -11,8 +11,8 @@ Authorization: Bearer {{token}}
 ###
 
 POST {{Restaurants.API_HostAddress}}/api/restaurants
+Authorization: Bearer {{token}}
 Content-Type: application/json
-
 {
   "Name": "Spicy Delights",
    "Description": "A culinary experience like no other",
@@ -50,7 +50,7 @@ POST {{Restaurants.API_HostAddress}}/api/identity/register
 Content-Type: application/json
 
 {
-  "email": "fawzi@gmail.com",
+  "email": "owner@gmail.com",
   "password": "Fawzi123#"
 }
 

@@ -9,6 +9,8 @@ using Restaurants.Infrastructure.Repositories;
 using Restaurants.Infrastructure.Seaders;
 using static System.Net.Mime.MediaTypeNames;
 using System.Security.Principal;
+using Microsoft.AspNetCore.Identity;
+using Restaurants.Infrastructure.Authorization;
 namespace Restaurants.Infrastructure.Extensions;
 
 public static class ServicesCollectionExtensions
@@ -26,6 +28,8 @@ public static class ServicesCollectionExtensions
         //This registers minimal API endpoints for Identity management into your application.
         //This method tells ASP.NET Core Identity to use Entity Framework Core for storing and managing user and role data in a SQL database (or other EF-supported database).
         services.AddIdentityApiEndpoints<ApplicationUser>()
+            .AddRoles<IdentityRole>()
+            .AddClaimsPrincipalFactory<RestaurantsUserClaimsPrincipalFactory>()
             .AddEntityFrameworkStores<RestaurantsDbContext>();
     }
 

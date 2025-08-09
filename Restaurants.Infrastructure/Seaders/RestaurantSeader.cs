@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Restaurants.Domain.Constants;
 using Restaurants.Domain.Entities;
 using Restaurants.Infrastructure.Persistence;
 
@@ -20,11 +22,32 @@ internal class RestaurantSeader(RestaurantsDbContext DbContextRestuarnt): IResta
                 await DbContextRestuarnt.Restaurants.AddRangeAsync(resturants);
                 await DbContextRestuarnt.SaveChangesAsync();
             }
+            if(!DbContextRestuarnt.Roles.Any())
+            {
+                var roles = GetRoles();
+                await DbContextRestuarnt.Roles.AddRangeAsync(roles);
+                await DbContextRestuarnt.SaveChangesAsync();
+            }
         }
        
 
     }
 
+    private IEnumerable<IdentityRole> GetRoles()
+    {
+        List<IdentityRole> roles = [
+            new IdentityRole("Admin"){
+                NormalizedName=UserRoles.Admin.ToUpper()
+            },
+            new IdentityRole("User"){
+                NormalizedName=UserRoles.User.ToUpper()
+            },
+            new IdentityRole("Owner"){
+                NormalizedName = UserRoles.User.ToUpper()
+            }
+        ];
+        return roles;
+    }
     private IEnumerable<Restaurant> GetRestaurants()
     {
         List<Restaurant> restaurants = [
